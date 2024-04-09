@@ -3,3 +3,4 @@ test.py
 SudokuSolver.ipynb
 number_images
 SudokuImages
+__pycache__
