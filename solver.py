@@ -1,6 +1,8 @@
 import numpy as np
 
+
 def p(grid):
+    """Print the Sudoku"""
     print(grid[0:3])
     print(grid[3:6])
     print(grid[6:9])
@@ -14,11 +16,12 @@ class Sudoku:
 
     def get_rows(self, sudoku):
         return sudoku
-    
+
     def get_cols(self, sudoku):
-        cols = [[sudoku[i][j] for i in range(len(sudoku[0]))] for j in range(len(sudoku))]
+        cols = [[sudoku[i][j]
+                 for i in range(len(sudoku[0]))] for j in range(len(sudoku))]
         return cols
-    
+
     def get_grids(self, sudoku):
         grids = []
 
@@ -33,57 +36,97 @@ class Sudoku:
         return grids
 
     def __init__(self, sudoku):
-        self.sudoku = sudoku
-        self.rows = sudoku
-        self.cols = self.get_cols(sudoku)
-        self.grids = self.get_grids(sudoku)
-        self.freq = np.zeros(9)
+        self.sudoku = np.array(sudoku)
+        self.rows = [self.sudoku[i, :] for i in range(9)]
+        self.cols = [self.sudoku[:, j] for j in range(9)]
+        self.grids = self.sudoku.reshape(
+            3, 3, 3, 3).swapaxes(1, 2).reshape(9, 9)
 
     def mode_sudoku(self):
-        
-        for row in self.sudoku:
+        """Element which occurs the most in the Sudoku"""
+        freq = np.zeros(9)
+        for row in self.rows:
             for cell in row:
-                if self.freq[cell] == 8:
-                    self.freq[cell] = -1
-                else:
-                    self.freq[cell] += 1
-        
-        return str(np.argmax(self.freq))
+                if cell:
+                    # print(cell)
+                    if freq[int(cell)-1] == 8:
+                        freq[int(cell)-1] = -1
+                    else:
+                        freq[int(cell)-1] += 1
+
+        # print("freq", freq)
+        return np.argsort(freq)[::-1]
 
     def forced_fill(self, num):
-        for i, grid in enumerate(self.grids):
+        """Fill Cells which can be done without assumptions"""
+        changed = False
+        for grid_num, grid in enumerate(self.grids):
             if num not in grid:
-                r = self.sudoku[int(3*(i/3)): int(3*(i/3) + 1)]
-                c = self.sudoku[int(3*(i%3)): int(3*(i%3) + 1)]
 
-                for i in r:
-                    if num in self.rows[r]:
-                        r.remove(i)
-                
-                for j in c:
-                    if num in self.cols[c]:
-                        c.remove(j)
+                indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-                if len(r) == 1 and len(c) == 1:
-                    self.sudoku[r[0], c[0]] == num
+                for cell in range(9):
+                    if grid[cell] != "":
+                        indexes.remove(cell)
 
-    def can_fill_cell(self, num, row, col):
-        # if num not in 
-        ...
+                # print("Grid_num", grid_num)
+                rows = self.rows[int(3*(grid_num//3))                                 : int(3*(grid_num//3) + 3)]
+                cols = self.cols[int(3*(grid_num % 3)): int(3*(grid_num % 3) + 3)]
+
+                # print("rows", rows)
+                # print("cols", cols)
+
+                for r_num, r in enumerate(rows):
+                    if num in r:
+                        for k in range(3*r_num, 3*r_num+3):
+                            if k in indexes:
+                                indexes.remove(k)
+
+                # print("After rows", indexes)
+                for c_num, c in enumerate(cols):
+                    if num in c:
+                        for k in range(c_num, 9, 3):
+                            if k in indexes:
+                                indexes.remove(k)
+
+                # print("After Cols", indexes)
+
+                if len(indexes) == 1:
+                    row = (grid_num // 3) * 3 + (indexes[0] // 3)
+                    col = (grid_num % 3) * 3 + (indexes[0] % 3)
+                    self.sudoku[row][col] = num
+                    changed = True
+                    print(f"Filled {num}")
+
+        return changed
+
+    def full_forced(self):
+        changed = True
+        while changed:
+            for i in self.mode_sudoku():
+                changed = self.forced_fill(str(i+1))
 
 
+# s = [["", "3", "9", "5", "", "", "", "", ""],
+#      ["", "", "", "8", "", "", "", "7", ""],
+#      ["", "", "", "", "1", "", "9", "", "4"],
+#      ["1", "", "", "4", "", "", "", "", "3"],
+#      ["", "", "", "", "", "", "", "", ""],
+#      ["", "", "7", "", "", "", "8", "6", ""],
+#      ["", "", "6", "7", "", "8", "2", "", ""],
+#      ["", "1", "", "", "9", "", "", "", "5"],
+#      ["", "", "", "", "", "1", "", "", "8"]]
 
-s = [["", "3", "9", "5", "", "", "", "", ""],
-     ["", "", "0", "8", "", "", "", "7", ""],
-     ["", "", "", "", "1", "", "9", "", "4"],
-     ["1", "", "", "4", "", "", "", "", "3"],
-     ["", "", "", "", "", "", "", "", ""],
-     ["", "", "7", "", "", "", "8", "6", ""],
-     ["", "", "6", "7", "", "8", "2", "", ""],
-     ["", "1", "", "", "9", "", "", "", "5"],
-     ["", "", "", "", "", "1", "", "", "8"]]
+# s = [['4', '5', '3', '8', '2', '1', '7', '9', '6'],
+#      ['7', '1', '8', '4', '6', '9', '3', '5', '2'],
+#      ['2', '6', '9', '5', '7', '3', '8', '1', '4'],
+#      ['9', '7', '2', '6', '4', '8', '1', '3', '5'],
+#      ['1', '3', '4', '9', '5', '2', '6', '7', '8'],
+#      ['6', '8', '5', '1', '3', '7', '4', '2', '9'],
+#      ['8', '9', '7', '2', '1', '6', '5', '4', '3'],
+#      ['3', '4', '6', '7', '9', '5', '2', '8', '1'],
+#      ['5', '2', '1', '3', '8', '4', '9', '6', '7']]
 
-solver = Sudoku(s)
-solver.forced_fill("9")
-for i in s:
-    print(i)
+# solver = Sudoku(s)
+# solver.full_forced()
+# print(solver.sudoku)
