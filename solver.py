@@ -35,12 +35,36 @@ class Sudoku:
 
         return grids
 
+    def get_markup(self):
+        markup = np.empty((9,9), dtype=set)
+        for i in range(9):
+            for j in range(9):
+                if self.sudoku[i][j] == "":
+                    digits = self.DIGITS.copy()
+                    for digit in self.rows[i]:
+                        digits.discard(digit)
+                    
+                    for digit in self.cols[j]:
+                        digits.discard(digit)
+                    
+                    for digit in self.grids[(i//3)*3 + (j//3)]:
+                        digits.discard(digit)
+
+                    markup[i][j] = digits
+                else:
+                    markup[i][j] = {}
+        
+        return markup
+
+    def do_markup(self):
+        self.markup = self.get_markup()
+
     def __init__(self, sudoku):
         self.sudoku = np.array(sudoku)
         self.rows = [self.sudoku[i, :] for i in range(9)]
         self.cols = [self.sudoku[:, j] for j in range(9)]
-        self.grids = self.sudoku.reshape(
-            3, 3, 3, 3).swapaxes(1, 2).reshape(9, 9)
+        self.grids = self.sudoku.reshape(3, 3, 3, 3).swapaxes(1, 2).reshape(9, 9)
+        self.markup = self.get_markup()
 
     def mode_sudoku(self):
         """Element which occurs the most in the Sudoku"""
@@ -105,28 +129,23 @@ class Sudoku:
         while changed:
             for i in self.mode_sudoku():
                 changed = self.forced_fill(str(i+1))
+        self.do_markup()
+        
 
 
-# s = [["", "3", "9", "5", "", "", "", "", ""],
-#      ["", "", "", "8", "", "", "", "7", ""],
-#      ["", "", "", "", "1", "", "9", "", "4"],
-#      ["1", "", "", "4", "", "", "", "", "3"],
-#      ["", "", "", "", "", "", "", "", ""],
-#      ["", "", "7", "", "", "", "8", "6", ""],
-#      ["", "", "6", "7", "", "8", "2", "", ""],
-#      ["", "1", "", "", "9", "", "", "", "5"],
-#      ["", "", "", "", "", "1", "", "", "8"]]
+s = [["", "3", "9", "5", "", "", "", "", ""],
+     ["", "", "", "8", "", "", "", "7", ""],
+     ["", "", "", "", "1", "", "9", "", "4"],
+     ["1", "", "", "4", "", "", "", "", "3"],
+     ["", "", "", "", "", "", "", "", ""],
+     ["", "", "7", "", "", "", "8", "6", ""],
+     ["", "", "6", "7", "", "8", "2", "", ""],
+     ["", "1", "", "", "9", "", "", "", "5"],
+     ["", "", "", "", "", "1", "", "", "8"]]
 
-# s = [['4', '5', '3', '8', '2', '1', '7', '9', '6'],
-#      ['7', '1', '8', '4', '6', '9', '3', '5', '2'],
-#      ['2', '6', '9', '5', '7', '3', '8', '1', '4'],
-#      ['9', '7', '2', '6', '4', '8', '1', '3', '5'],
-#      ['1', '3', '4', '9', '5', '2', '6', '7', '8'],
-#      ['6', '8', '5', '1', '3', '7', '4', '2', '9'],
-#      ['8', '9', '7', '2', '1', '6', '5', '4', '3'],
-#      ['3', '4', '6', '7', '9', '5', '2', '8', '1'],
-#      ['5', '2', '1', '3', '8', '4', '9', '6', '7']]
-
-# solver = Sudoku(s)
-# solver.full_forced()
-# print(solver.sudoku)
+solver = Sudoku(s)
+solver.full_forced()
+print()
+print(solver.sudoku)
+print()
+print(solver.markup)
