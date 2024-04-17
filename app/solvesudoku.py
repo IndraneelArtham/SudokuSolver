@@ -1,15 +1,14 @@
 """
 Module containing class to solve a sudoku
 """
-
-def p(grid):
-    print(grid[0:3])
-    print(grid[3:6])
-    print(grid[6:9])
-    print("\n")
-
+import create_sudoku as cs
+import digit_extract as de
 
 class Sudoku:
+
+    def __init__(self, path):
+        de.dig_extract(path)
+        self.sudoku = cs.create_sudoku()
 
     DIGITS = set([str(i) for i in range(1, 10)])
     EMPTY = ''
@@ -60,33 +59,18 @@ class Sudoku:
 
         return list(candidates)
     
-    def solve_sudoku(self, sudoku):
-        if self.is_valid_state(sudoku):
+    def solve_sudoku(self):
+        if self.is_valid_state(self.sudoku):
             return True
         for row in range(9):
             for col in range(9):
-                if sudoku[row][col] == self.EMPTY:
-                    for candidate in self.get_candidates(sudoku, row, col):
-                        sudoku[row][col] = candidate
-                        solved = self.solve_sudoku(sudoku)
+                if self.sudoku[row][col] == self.EMPTY:
+                    for candidate in self.get_candidates(self.sudoku, row, col):
+                        self.sudoku[row][col] = candidate
+                        solved = self.solve_sudoku()
                         if solved:
                             return True
                         else:
-                            sudoku[row][col] = self.EMPTY
+                            self.sudoku[row][col] = self.EMPTY
                     return False
         return True
-
-if __name__ == "__main__":
-    s = [["", "5", "", "", "", "", "", "9", ""],
-        ["", "", "8", "4", "", "9", "3", "", ""],
-        ["", "6", "", "", "7", "", "", "1", ""],
-        ["9", "", "", "6", "4", "8", "", "", "5"],
-        ["", "", "", "", "", "", "", "7", ""],
-        ["6", "", "", "1", "3", "7", "", "", "9"],
-        ["", "9", "", "", "1", "", "", "4", ""],
-        ["", "", "6", "7", "", "5", "2", "", ""],
-        ["", "2", "", "", "", "", "", "6", ""]]
-    solver = Sudoku()
-    solver.solve_sudoku(s)
-    for i in s:
-        print(i)

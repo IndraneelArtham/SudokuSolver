@@ -1,11 +1,11 @@
-from keras.preprocessing import image
-import tensorflow as tf
-tf.get_logger().setLevel('ERROR')
-from keras.models import load_model
-import cv2
-import numpy as np
-
 def create_sudoku():
+    from keras.preprocessing import image
+    import tensorflow as tf
+    tf.get_logger().setLevel('ERROR')
+    from keras.models import load_model
+    import cv2
+    import numpy as np
+    
     nums = []
     cnn = load_model('number_identifier')
     for i in range(81):

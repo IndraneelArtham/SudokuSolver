@@ -129,7 +129,7 @@ class Sudoku:
         while changed:
             for i in self.mode_sudoku():
                 changed = self.forced_fill(str(i+1))
-        self.do_markup()
+        # self.do_markup()
         
 
 

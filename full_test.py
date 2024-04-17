@@ -1,15 +1,9 @@
-import numpy as np
-import cv2
-from imutils.contours import sort_contours
-import matplotlib.pyplot as plt
-
-
 import create_sudoku as cs
 import digit_extract as de
-from solver import Sudoku
+from solvesudoku import Sudoku
 
 
-de.dig_extract("SudokuImages/Sudoku4.jpg")
+de.dig_extract("SudokuImages/Sudoku5.jpg")
 sudoku = cs.create_sudoku()
 
 # sudoku = [
@@ -27,6 +21,6 @@ sudoku = cs.create_sudoku()
 # ]
 
 
-s = Sudoku(sudoku)
-s.full_forced()
-print(s.sudoku)
+solver = Sudoku()
+solver.solve_sudoku(sudoku)
+print(sudoku)
