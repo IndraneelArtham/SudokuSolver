@@ -1,0 +1,6 @@
+flask
+opencv-python
+tensorflow
+numpy
+flask-wtf
+flask-reuploaded
