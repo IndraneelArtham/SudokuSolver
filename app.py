@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory, url_for
+from flask import Flask, render_template, send_from_directory, url_for, redirect, request
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -41,11 +41,17 @@ def upload_image():
         # solution = solver.sudoku
 
         if initial is not None:
-            return render_template('puzzle.html', file_url= f'uploads/{filename}', solution =initial)
+            return redirect(url_for('confirm', file_url=file_url, solution=initial))
         else:
             return "Failed to solve Sudoku puzzle"
 
     return render_template('index.html', form=form, file_url=None)
+
+@app.route('/confirm')
+def confirm():
+    file_url = request.args.get('file_url')
+    solution = request.args.get('solution')
+    return render_template('puzzle.html', file_url=file_url, solution=solution)
 
 
 if __name__ == "__main__":

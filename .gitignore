@@ -1,6 +1,7 @@
-test.ipynb
-test.py
-SudokuSolver.ipynb
-number_images
-SudokuImages
+dev/test.ipynb
+dev/test.py
+dev/SudokuSolver.ipynb
+dev/number_images
+dev/SudokuImages
+dev/__pycache__
 __pycache__
