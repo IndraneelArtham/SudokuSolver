@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("container");
 
     // Sample puzzle data (modify this with your Sudoku puzzle data)
-    let puzzle = JSON.parse('{{ solution | tojson | safe }}');
-    const original = JSON.parse('{{ solution | tojson | safe }}');
+    let puzzle = JSON.parse(solution);
+    const original = JSON.parse(solution);
     // Function to create the Sudoku puzzle grid
     function createSudokuGrid(puzzle) {
         container.innerHTML = '';
