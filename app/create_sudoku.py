@@ -9,7 +9,7 @@ def create_sudoku():
     nums = []
     cnn = load_model('number_identifier')
     for i in range(81):
-        path = "number_images/" + str(i) + ".jpg"
+        path = "app\\number_images\\" + str(i) + ".jpg"
         test_image = image.load_img(path, target_size = (28, 28))
         test_image = image.img_to_array(test_image)
         test_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)

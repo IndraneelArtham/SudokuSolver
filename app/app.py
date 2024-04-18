@@ -5,7 +5,6 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField
 from solvesudoku import Sudoku
 import os
-import time
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -34,14 +33,15 @@ def upload_image():
     form = UploadForm()
     if form.validate_on_submit():
         filename = photos.save(form.photo.data)
-        file_url = "uploads/" + filename
+        file_url = os.path.join("app\\uploads", filename)
+        print(file_url)
         solver = Sudoku(file_url)
-        solver.solve_sudoku()
-        solution = solver.sudoku
+        initial = solver.sudoku.tolist()
+        # solver.solve_sudoku()
+        # solution = solver.sudoku
 
-        if solution is not None:
-            solution_str = '\n'.join([' '.join(map(str, row)) for row in solution])
-            return render_template('result.html', form=form, file_url=file_url, solution=solution_str)
+        if initial is not None:
+            return render_template('puzzle.html', file_url= f'uploads/{filename}', solution =initial)
         else:
             return "Failed to solve Sudoku puzzle"
 
