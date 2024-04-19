@@ -33,7 +33,7 @@ def upload_image():
     form = UploadForm()
     if form.validate_on_submit():
         filename = photos.save(form.photo.data)
-        file_url = os.path.join("app\\uploads", filename)
+        file_url = os.path.join("uploads", filename)
         print(file_url)
         solver = Sudoku(file_url)
         initial = solver.sudoku.tolist()
@@ -41,17 +41,11 @@ def upload_image():
         # solution = solver.sudoku
 
         if initial is not None:
-            return redirect(url_for('confirm', file_url=file_url, solution=initial))
+            return render_template('puzzle.html', file_url=file_url, solution=initial)
         else:
             return "Failed to solve Sudoku puzzle"
 
     return render_template('index.html', form=form, file_url=None)
-
-@app.route('/confirm')
-def confirm():
-    file_url = request.args.get('file_url')
-    solution = request.args.get('solution')
-    return render_template('puzzle.html', file_url=file_url, solution=solution)
 
 
 if __name__ == "__main__":
