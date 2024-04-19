@@ -5,7 +5,7 @@ def save_images(numbers):
     for i in range(len(numbers)):
         img = numbers[i]
         filename = str(i) + ".jpg"
-        cv2.imwrite("app\\number_images\\" + filename, img)
+        cv2.imwrite("number_images\\" + filename, img)
 
 def dig_extract(file_path):
     image = cv2.imread(file_path)

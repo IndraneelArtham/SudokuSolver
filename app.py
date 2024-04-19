@@ -33,7 +33,7 @@ def upload_image():
     form = UploadForm()
     if form.validate_on_submit():
         filename = photos.save(form.photo.data)
-        file_url = os.path.join("app\\uploads", filename)
+        file_url = os.path.join("uploads", filename)
         print(file_url)
         solver = Sudoku(file_url)
         initial = solver.sudoku.tolist()
@@ -49,4 +49,4 @@ def upload_image():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
