@@ -7,7 +7,7 @@ def create_sudoku():
     import numpy as np
     
     nums = []
-    cnn = load_model('number_identifier')
+    cnn = load_model('number_identifier.h5')
     for i in range(81):
         path = "number_images\\" + str(i) + ".jpg"
         test_image = image.load_img(path, target_size = (28, 28))
