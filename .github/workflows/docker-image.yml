@@ -10,7 +10,7 @@ on:
 jobs:
   CI_Pipeline:
     name: Push Docker image to Docker Hub
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
